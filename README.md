@@ -16,10 +16,15 @@ This system provides **authentication, attendance tracking, shared utilities**, 
 ✔ Employee Login & Registration
 
 ✔ Mark Attendance (Login / Logout)
+
 ✔ Modular **Client + Server + Shared** architecture
+
 ✔ Environment-based configuration using `.env`
+
 ✔ TypeScript support end-to-end
+
 ✔ Modern UI using Vite (Fast Refresh)
+
 ✔ Production-ready folder structure
 
 ---
