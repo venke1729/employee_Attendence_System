@@ -14,6 +14,7 @@ This system provides **authentication, attendance tracking, shared utilities**, 
 ## **🌟 Features**
 
 ✔ Employee Login & Registration
+
 ✔ Mark Attendance (Login / Logout)
 ✔ Modular **Client + Server + Shared** architecture
 ✔ Environment-based configuration using `.env`
