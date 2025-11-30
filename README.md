@@ -189,3 +189,11 @@ You can add your license here (MIT recommended):
 
 ```
 MIT License © 2025 Venkey Pujari
+
+👤 Author
+
+Name: POOJARI VENKATESWARLUU
+College: Srinivasa Ramanujan Institute of Technology
+Mobile: +91-8074007662
+GitHub: https://github.com/venke1729
+Email: pujarivenkey18@gmail.com
