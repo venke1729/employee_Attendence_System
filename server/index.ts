@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
+import { registerCompatRoutes } from "./compatRoutes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 
@@ -21,6 +22,17 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// Enable CORS for local development (all origins)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -62,6 +74,15 @@ app.use((req, res, next) => {
 (async () => {
   await registerRoutes(httpServer, app);
 
+  // Register lightweight compatibility routes (used when DB is not configured)
+  // These mirror the client mock API so the frontend can call HTTP endpoints.
+  try {
+    registerCompatRoutes(app);
+  } catch (e) {
+    // Non-fatal, log and continue
+    log(`compat routes registration failed: ${(e as Error).message}`, "express");
+  }
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -89,7 +110,6 @@ app.use((req, res, next) => {
     {
       port,
       host: "0.0.0.0",
-      reusePort: true,
     },
     () => {
       log(`serving on port ${port}`);

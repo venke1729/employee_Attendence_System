@@ -6,7 +6,7 @@ import { useLocation } from "wouter";
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -19,7 +19,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    // Simulate session check
+    // Try token-based session first
+    const token = localStorage.getItem("attendance_token");
+    if (token) {
+      api
+        .getCurrentUser()
+        .then((u) => {
+          setUser(u);
+          localStorage.setItem("attendance_user", JSON.stringify(u));
+        })
+        .catch(() => {
+          // fallback to previously stored user
+          const storedUser = localStorage.getItem("attendance_user");
+          if (storedUser) setUser(JSON.parse(storedUser));
+        })
+        .finally(() => setIsLoading(false));
+      return;
+    }
+
+    // fallback stored user
     const storedUser = localStorage.getItem("attendance_user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -27,10 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string) => {
+  const login = async (email: string, password: string) => {
     try {
       setIsLoading(true);
-      const user = await api.login(email);
+      const user = await api.login(email, password);
       setUser(user);
       localStorage.setItem("attendance_user", JSON.stringify(user));
       toast({
@@ -46,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       toast({
         title: "Login failed",
-        description: "Invalid email address. Try 'sarah@company.com' or 'michael@company.com'",
+        description: "Invalid email or password",
         variant: "destructive",
       });
       throw error;

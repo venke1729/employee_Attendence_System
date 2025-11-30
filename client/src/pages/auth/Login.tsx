@@ -26,7 +26,7 @@ export default function Login() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await login(values.email);
+      await login(values.email, values.password);
     } catch (error) {
       // Handled by auth provider
     }
@@ -84,42 +84,6 @@ export default function Login() {
                 <Button type="submit" className="w-full font-medium" disabled={isLoading}>
                   {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign In"}
                 </Button>
-                
-                <div className="relative my-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      Demo Credentials
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <Button 
-                    variant="outline" 
-                    type="button"
-                    className="text-xs"
-                    onClick={() => {
-                      form.setValue("email", "sarah@company.com");
-                      form.setValue("password", "password");
-                    }}
-                  >
-                    Employee (Sarah)
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    type="button"
-                    className="text-xs"
-                    onClick={() => {
-                      form.setValue("email", "michael@company.com");
-                      form.setValue("password", "password");
-                    }}
-                  >
-                    Manager (Michael)
-                  </Button>
-                </div>
               </form>
             </Form>
           </CardContent>

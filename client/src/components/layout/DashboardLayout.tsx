@@ -9,7 +9,8 @@ import {
   LogOut, 
   Menu, 
   X,
-  User as UserIcon
+  User as UserIcon,
+  Settings as SettingsIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -38,12 +39,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const employeeLinks = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/history", label: "My History", icon: CalendarDays },
+    { href: "/settings", label: "Settings", icon: SettingsIcon },
   ];
 
   const managerLinks = [
     { href: "/manager/dashboard", label: "Overview", icon: LayoutDashboard },
     { href: "/manager/team", label: "Team Attendance", icon: Users },
     { href: "/manager/reports", label: "Reports", icon: FileBarChart },
+    { href: "/manager/employees", label: "Manage Employees", icon: Users },
+    { href: "/settings", label: "Settings", icon: SettingsIcon },
   ];
 
   const links = user.role === "manager" ? managerLinks : employeeLinks;
@@ -146,6 +150,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     </p>
                   </div>
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <Link href="/settings">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <SettingsIcon className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="text-destructive cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />

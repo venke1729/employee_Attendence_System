@@ -6,11 +6,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 
 import Login from "@/pages/auth/Login";
+import ChangePasswordRequired from "@/pages/ChangePasswordRequired";
 import EmployeeDashboard from "@/pages/employee/Dashboard";
 import EmployeeHistory from "@/pages/employee/History";
 import ManagerDashboard from "@/pages/manager/Dashboard";
 import ManagerTeam from "@/pages/manager/Team";
 import ManagerReports from "@/pages/manager/Reports";
+import ManagerEmployees from "@/pages/manager/Employees";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/not-found";
 
 // Protected Route Wrapper
@@ -36,6 +39,11 @@ function Router() {
     <Switch>
       <Route path="/login" component={Login} />
       
+      {/* Force password change on first login */}
+      <Route path="/change-password-required">
+        <ChangePasswordRequired />
+      </Route>
+      
       {/* Employee Routes */}
       <Route path="/dashboard">
         <ProtectedRoute component={EmployeeDashboard} role="employee" />
@@ -54,11 +62,24 @@ function Router() {
       <Route path="/manager/reports">
         <ProtectedRoute component={ManagerReports} role="manager" />
       </Route>
+      <Route path="/manager/employees">
+        <ProtectedRoute component={ManagerEmployees} role="manager" />
+      </Route>
+
+      {/* Settings Route */}
+      <Route path="/settings">
+        <ProtectedRoute component={Settings} />
+      </Route>
 
       {/* Root Redirect */}
       <Route path="/">
         {user ? (
-          <Redirect to={user.role === "manager" ? "/manager/dashboard" : "/dashboard"} />
+          // If user hasn't changed password on first login, redirect to change password
+          !(user as any).hasChangedPassword ? (
+            <Redirect to="/change-password-required" />
+          ) : (
+            <Redirect to={user.role === "manager" ? "/manager/dashboard" : "/dashboard"} />
+          )
         ) : (
           <Redirect to="/login" />
         )}
